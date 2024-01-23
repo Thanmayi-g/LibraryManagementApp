@@ -17,6 +17,19 @@ namespace BookAPI.Models
 
         public virtual DbSet<Address> Addresses { get; set; }
 
+        public virtual DbSet<Image> Images { get; set; } // Add this line
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Image>()
+                .HasOne(i => i.Book)
+                .WithMany(b => b.Images)
+                .HasForeignKey(i => i.BookId);
+
+          
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 
 

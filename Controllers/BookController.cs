@@ -24,6 +24,7 @@ namespace BookAPI.Controllers
             var query = from book in db.Books
                         join author in db.Authors on book.AuthorId equals author.AuthorId
                         join publisher in db.Publications on book.PublicationId equals publisher.PublicationId
+                        orderby book.PublishedOn ascending
                         select new
                         {
                             book.BookName,
@@ -32,8 +33,11 @@ namespace BookAPI.Controllers
                             book.Genre,
                             author.FirstName,
                             author.LastName,
-                            publisher.PublishingCompanyName
-                        };
+                            publisher.PublishingCompanyName,
+                            // book.ImageUrl
+                            Images = book.Images.Select(image => image.Url).ToList(),
+                            book.Description
+                        }; 
 
             var totalRecords = query.Count();
             var totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
@@ -98,6 +102,7 @@ namespace BookAPI.Controllers
                 book.Genre = bookobj.Genre;
                 book.PublicationId = bookobj.PublicationId;
                 book.AuthorId = bookobj.AuthorId;
+                //     book.ImageUrls = bookobj.ImageUrl;
                 db.Books.Add(book);
                 db.SaveChanges();
                 return Ok("Book Added Successfully");
@@ -207,6 +212,8 @@ public class BookInputModel
     public int PublicationId { get; set; }
 
     public int AuthorId { get; set; }
+    //public string? ImageUrl { get; set; }
+    
 }
 
 public class BookEditModel
@@ -223,3 +230,4 @@ public class BookEditModel
 
     public int AuthorId { get; set; }
 }
+//https://sportshub.cbsistatic.com/i/2022/06/10/4070adc6-36b5-41c8-8266-995f068c8180/english-harry-potter-2-epub-9781781100226.jpg?auto=webp&width=200&height=200&crop=0.667:1,smart" 

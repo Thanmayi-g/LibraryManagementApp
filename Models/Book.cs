@@ -10,6 +10,7 @@ namespace BookAPI.Models
 
         public int BookId { get; set; }
         [Required]
+        [StringLength(200, ErrorMessage = "BookName cannot exceed 200 characters.")]
         public string BookName { get; set; }
         [Required]
         public DateTime PublishedOn { get; set; }
@@ -33,6 +34,12 @@ namespace BookAPI.Models
 
         public virtual Author Author { get; set; }
 
+
+        // Multiple image URLs
+        public List<Image> Images { get; set; }
+
+        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
+        public string? Description { get; set; }
 
 
 

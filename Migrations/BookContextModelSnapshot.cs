@@ -89,7 +89,12 @@ namespace BookAPI.Migrations
 
                     b.Property<string>("BookName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Genre")
                         .IsRequired()
@@ -112,6 +117,28 @@ namespace BookAPI.Migrations
                     b.HasIndex("PublicationId");
 
                     b.ToTable("Books");
+                });
+
+            modelBuilder.Entity("BookAPI.Models.Image", b =>
+                {
+                    b.Property<int>("ImageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ImageId"), 1L, 1);
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ImageId");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("BookAPI.Models.Publication", b =>
@@ -155,6 +182,17 @@ namespace BookAPI.Migrations
                     b.Navigation("Publication");
                 });
 
+            modelBuilder.Entity("BookAPI.Models.Image", b =>
+                {
+                    b.HasOne("BookAPI.Models.Book", "Book")
+                        .WithMany("Images")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+                });
+
             modelBuilder.Entity("BookAPI.Models.Publication", b =>
                 {
                     b.HasOne("BookAPI.Models.Address", "Address")
@@ -169,6 +207,11 @@ namespace BookAPI.Migrations
             modelBuilder.Entity("BookAPI.Models.Author", b =>
                 {
                     b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("BookAPI.Models.Book", b =>
+                {
+                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("BookAPI.Models.Publication", b =>
